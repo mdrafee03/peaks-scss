@@ -7,9 +7,11 @@ function App() {
   return (
     <BrowserRouter>
       <Topbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-      </Routes>
+      <div className="content-wrapper">
+        <Routes>
+          <Route path="/" element={<Home />} />
+        </Routes>
+      </div>
     </BrowserRouter>
   );
 }

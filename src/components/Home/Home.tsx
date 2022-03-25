@@ -3,17 +3,49 @@ import Loader from "../Loader/Loader";
 import Pic from "../../assets/pic.png";
 import "./Home.scss";
 import environment from "../../environment";
+import { useEffect } from "react";
+import axios from "axios";
+import useTopNewsFetching from "./hooks/useTopNewsFetching/useTopNesFetching";
+import ContentHeader from "../Content Header/ContentHeader";
 
 const Home = (): JSX.Element => {
-  console.log(environment.BASE_URL);
+  const { data, isLoading, error, request } = useTopNewsFetching();
+
+  useEffect(() => {
+    request("newest");
+  }, []);
+
+  useEffect(() => {
+    if (data) {
+      console.log(data);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    console.log(isLoading);
+  }, [isLoading]);
+
+  const handleBookmarkClick = () => {};
+  const handleSelect = (orderBy: string) => {
+    request(orderBy);
+  };
+
   return (
-    <div className="card-container">
-      <Card
-        imgUrl={Pic}
-        title="Global report: WHO warns of accelerating Covid-19 infections in Africa"
-        body="Continent is seeing more cases spread to the provinces; Trump supporters can’t sue over catching Covid-19 at rallies; Brazil confirms 30,000 new cases"
+    <>
+      <ContentHeader
+        title="Top Stories"
+        onclickBookmark={handleBookmarkClick}
+        onSelect={handleSelect}
       />
-    </div>
+      {isLoading && <Loader />}
+      <div className="cards-container">
+        {data?.response.results.map((article, index) => (
+          <article className={`card-wrapper ${index === 0 ? 'first': ''}`} key={article.id}>
+            <Card title={article.webTitle} body={article.fields.trailText} />
+          </article>
+        ))}
+      </div>
+    </>
   );
 };
 
