@@ -7,9 +7,11 @@ import { useEffect } from "react";
 import axios from "axios";
 import useTopNewsFetching from "./hooks/useTopNewsFetching/useTopNesFetching";
 import ContentHeader from "../Content Header/ContentHeader";
+import { Link, useNavigate } from "react-router-dom";
 
 const Home = (): JSX.Element => {
   const { data, isLoading, error, request } = useTopNewsFetching();
+  const navigate = useNavigate();
 
   useEffect(() => {
     request("newest");
@@ -21,11 +23,9 @@ const Home = (): JSX.Element => {
     }
   }, [data]);
 
-  useEffect(() => {
-    console.log(isLoading);
-  }, [isLoading]);
-
-  const handleBookmarkClick = () => {};
+  const handleBookmarkClick = () => {
+    navigate('/bookmarks');
+  };
   const handleSelect = (orderBy: string) => {
     request(orderBy);
   };
@@ -40,9 +40,13 @@ const Home = (): JSX.Element => {
       {isLoading && <Loader />}
       <div className="cards-container">
         {data?.response.results.map((article, index) => (
-          <article className={`card-wrapper ${index === 0 ? 'first': ''}`} key={article.id}>
+          <Link
+            to={`/article/${encodeURIComponent(article.id)}`}
+            className={`card-wrapper ${index === 0 ? "first" : ""}`}
+            key={article.id}
+          >
             <Card title={article.webTitle} body={article.fields.trailText} />
-          </article>
+          </Link>
         ))}
       </div>
     </>
